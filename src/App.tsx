@@ -1,6 +1,13 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 import { Grid } from '@mui/material';
+
+import HeaderUI from './components/HeaderUI';
+
+import AlertUI from './components/AlertUI';
+
+import SelectorUI from './components/SelectorUI';
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -9,22 +16,28 @@ function App() {
     <Grid container spacing={5} justifyContent="center" alignItems="center">
 
       {/* Encabezado */}
-      <Grid item xs={12} md={12}>Elemento: Encabezado</Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <HeaderUI />
+      </Grid>
 
       {/* Alertas */}
-      <Grid item xs={12} md={12}>Elemento: Alertas</Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <Grid container justifyContent="right" alignItems="center">
+          <AlertUI description="No se preveen lluvias"/>
+        </Grid>
+      </Grid>
 
       {/* Selector */}
-      <Grid item xs={12} md={3}>Elemento: Selector</Grid>
+      <Grid size={{ xs: 12, md: 3 }}>
+        <SelectorUI />
+      </Grid>
 
       {/* Indicadores */}
-      <Grid item xs={12} md={9}>Elemento: Indicadores</Grid>
+      <Grid size={{ xs: 12, md: 9 }}>Elemento: Indicadores</Grid>
 
       {/* Gráfico */}
       <Grid
-        item
-        xs={12}
-        md={6}
+        size={{ xs: 12, md: 6 }}
         sx={{
           display: { xs: 'none', md: 'block' }
         }}
@@ -34,9 +47,7 @@ function App() {
 
       {/* Tabla */}
       <Grid
-        item
-        xs={12}
-        md={6}
+        size={{ xs: 12, md: 6 }}
         sx={{
           display: { xs: 'none', md: 'block' }
         }}
@@ -45,7 +56,7 @@ function App() {
       </Grid>
 
       {/* Información adicional */}
-      <Grid item xs={12} md={12}>Elemento: Información adicional</Grid>
+      <Grid size={{ xs: 12, md: 12 }}>Elemento: Información adicional</Grid>
 
     </Grid>
   )
