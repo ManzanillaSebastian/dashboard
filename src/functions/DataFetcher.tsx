@@ -7,6 +7,13 @@ interface DataFetcherOutput {
     error: string | null;
 }
 
+const coordenadasCiudad = {
+    {Guayaquil}: {latitud: -2.1962, longitud: -79.8862},
+    Quito: {latitud: -0.2298, longitud: -78525},
+    Manta: {latitud: -0.9494, longitud: -80.7314},
+    Cuenca: {latitud: -2.9005, longitud: -79.0045}
+}
+
 export default function DataFetcher() : DataFetcherOutput {
 
     const [data, setData] = useState<OpenMeteoResponse | null>(null);
@@ -15,8 +22,10 @@ export default function DataFetcher() : DataFetcherOutput {
 
     useEffect(() => {
 
+        const {latitud, longitud} = coordenadasCiudad[ciudad]
+
         // Reemplace con su URL de la API de Open-Meteo obtenida en actividades previas
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&timezone=America%2FChicago`
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitud}&longitude=${longitud}&hourly=temperature_2m,wind_speed_10m&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&timezone=America%2FChicago`
 
         const fetchData = async () => {
 

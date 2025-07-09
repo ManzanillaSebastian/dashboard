@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './App.css';
 import { Grid } from '@mui/material';
 
@@ -7,9 +6,10 @@ import AlertUI from './components/AlertUI';
 import SelectorUI from './components/SelectorUI';
 import IndicatorUI from './components/IndicatorUI';
 import DataFetcher from './functions/DataFetcher';
+import TableUI from './components/TableUI';
+import ChartUI from './components/ChartUI';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   const dataFetcherOutput = DataFetcher();
 
@@ -69,23 +69,31 @@ function App() {
       </Grid>
 
       {/* Gráfico */}
-      <Grid
-        size={{ xs: 12, md: 6 }}
-        sx={{
-          display: { xs: 'none', md: 'block' }
-        }}
-      >
-        Elemento: Gráfico
+      <Grid size={{ xs: 6, md: 6 }} sx={{ display: { xs: "none", md: "block" } }}>
+        {/* Renderizado condicional de los datos obtenidos */}
+        {dataFetcherOutput.loading && <p>Cargando datos...</p>}
+        {dataFetcherOutput.error && <p>Error: {dataFetcherOutput.error}</p>}
+        {dataFetcherOutput.data && (
+          <ChartUI
+            arrValues1={dataFetcherOutput.data.hourly.temperature_2m}
+            arrValues2={dataFetcherOutput.data.hourly.wind_speed_10m}
+            arrLabels={dataFetcherOutput.data.hourly.time}
+          />
+        )}
       </Grid>
 
       {/* Tabla */}
-      <Grid
-        size={{ xs: 12, md: 6 }}
-        sx={{
-          display: { xs: 'none', md: 'block' }
-        }}
-      >
-        Elemento: Tabla
+      <Grid size={{ xs: 6, md: 6 }} sx={{ display: { xs: "none", md: "block" } }}>
+        {/* Renderizado condicional de los datos obtenidos */}
+        {dataFetcherOutput.loading && <p>Cargando datos...</p>}
+        {dataFetcherOutput.error && <p>Error: {dataFetcherOutput.error}</p>}
+        {dataFetcherOutput.data && (
+          <TableUI
+            arrValues1={dataFetcherOutput.data.hourly.temperature_2m}
+            arrValues2={dataFetcherOutput.data.hourly.wind_speed_10m}
+            arrLabels={dataFetcherOutput.data.hourly.time}
+          />
+        )}
       </Grid>
 
       {/* Información adicional */}
