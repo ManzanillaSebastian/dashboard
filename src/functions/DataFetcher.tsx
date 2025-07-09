@@ -7,20 +7,28 @@ interface DataFetcherOutput {
     error: string | null;
 }
 
-const coordenadasCiudad = {
-    {Guayaquil}: {latitud: -2.1962, longitud: -79.8862},
-    Quito: {latitud: -0.2298, longitud: -78525},
-    Manta: {latitud: -0.9494, longitud: -80.7314},
-    Cuenca: {latitud: -2.9005, longitud: -79.0045}
-}
+const coordenadasCiudad: Record<string, { latitud: number; longitud: number }> = {
+  guayaquil: { latitud: -2.1962, longitud: -79.8862 },
+  quito: { latitud: -0.2298, longitud: -78.5245 },
+  manta: { latitud: -0.9494, longitud: -80.7314 },
+  cuenca: { latitud: -2.9005, longitud: -79.0045 },
+};
 
-export default function DataFetcher() : DataFetcherOutput {
+
+export default function DataFetcher(ciudad: string) : DataFetcherOutput {
 
     const [data, setData] = useState<OpenMeteoResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+
+        if (!ciudad || !coordenadasCiudad[ciudad]) {
+            setData(null);
+            setLoading(false);
+            setError(null);
+            return;
+        }
 
         const {latitud, longitud} = coordenadasCiudad[ciudad]
 
@@ -55,7 +63,7 @@ export default function DataFetcher() : DataFetcherOutput {
 
         fetchData();
 
-    }, []); // El array vacío asegura que el efecto se ejecute solo una vez después del primer renderizado
+    }, [ciudad]); // El array vacío asegura que el efecto se ejecute solo una vez después del primer renderizado
 
     return { data, loading, error };
 
