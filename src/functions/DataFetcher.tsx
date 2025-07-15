@@ -23,6 +23,8 @@ export default function DataFetcher(ciudad: string) : DataFetcherOutput {
 
     useEffect(() => {
 
+        console.log(`USE EFFECT!`);
+
         if (!ciudad || !coordenadasCiudad[ciudad]) {
             setData(null);
             setLoading(false);
@@ -30,40 +32,63 @@ export default function DataFetcher(ciudad: string) : DataFetcherOutput {
             return;
         }
 
-        const {latitud, longitud} = coordenadasCiudad[ciudad]
+        //Validando el tiempo transcurrido desde la última petición sobre la misma ciudad
+        let tiempoTranscurrido : number = parseInt(localStorage.getItem(`fecha_${ciudad}`) ?? `0`);
+        console.log(tiempoTranscurrido)
 
-        // Reemplace con su URL de la API de Open-Meteo obtenida en actividades previas
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitud}&longitude=${longitud}&hourly=temperature_2m,wind_speed_10m&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&timezone=America%2FChicago`
+        if (Date.now() - tiempoTranscurrido <= 1800000) { // 30 min en milisegundos
+            console.log(`Leyendo de datos locales...`);
 
-        const fetchData = async () => {
+            let dataLocal = JSON.parse(localStorage.getItem(`data_${ciudad}`)!);
+            setData(dataLocal);
+            setLoading(false);
+            setError(null);
+        }
 
-            try {
+        else{        
 
-                const response = await fetch(url);
+            console.log(`Obteniendo datos de la API...`);
 
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+            const {latitud, longitud} = coordenadasCiudad[ciudad]
+
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitud}&longitude=${longitud}&hourly=temperature_2m,wind_speed_10m&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&timezone=America%2FChicago`
+
+            const fetchData = async () => {
+
+                try {
+
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+                    }
+
+                    const result: OpenMeteoResponse = await response.json();
+
+                    console.log(`Datos obtenidos:`, result);
+
+                    setData(result);
+
+                    localStorage.setItem(`data_${ciudad}`, JSON.stringify(result));
+                    localStorage.setItem(`fecha_${ciudad}`, Date.now().toString());
+
+                } catch (err: any) {
+
+                    if (err instanceof Error) {
+                        setError(err.message);
+                    } else {
+                        setError("Ocurrió un error desconocido al obtener los datos.");
+                    }
+
+                } finally {
+                    setLoading(false);
                 }
+            };
 
-                const result: OpenMeteoResponse = await response.json();
-                setData(result);
+            fetchData();
+        }
 
-            } catch (err: any) {
-
-                if (err instanceof Error) {
-                    setError(err.message);
-                } else {
-                    setError("Ocurrió un error desconocido al obtener los datos.");
-                }
-
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-
-    }, [ciudad]); // El array vacío asegura que el efecto se ejecute solo una vez después del primer renderizado
+    }, [ciudad]);
 
     return { data, loading, error };
 

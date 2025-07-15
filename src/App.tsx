@@ -12,7 +12,7 @@ import ChartUI from './components/ChartUI';
 
 function App() {
 
-  const [cityInput, setCityInput] = useState('');
+  const [cityInput, setCityInput] = useState('guayaquil');
 
   const dataFetcherOutput = DataFetcher(cityInput);
 
