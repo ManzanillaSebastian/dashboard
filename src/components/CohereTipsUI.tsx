@@ -8,7 +8,7 @@ interface CohereResponse{
 
 export default function CohereTipsUI(respuestaCohere : CohereResponse) {
 
-    const recomendaciones = respuestaCohere.contenido.slice(2).replace(/\*/g, "").split(";").map( (recomendacion, index) => {
+    const recomendaciones = respuestaCohere.contenido.slice(2).replace(/\*/g, "").split(";").map( (recomendacion) => {
         const recomendacionDividida = recomendacion.split(":").map((elemento) => elemento.trim());
 
         return (
