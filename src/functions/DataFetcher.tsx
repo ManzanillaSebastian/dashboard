@@ -23,7 +23,7 @@ export default function DataFetcher(ciudad: string) : DataFetcherOutput {
 
     useEffect(() => {
 
-        console.log(`USE EFFECT!`);
+        console.log(`USE EFFECT DATAFETCHER!`);
 
         if (!ciudad || !coordenadasCiudad[ciudad]) {
             setData(null);
@@ -51,7 +51,7 @@ export default function DataFetcher(ciudad: string) : DataFetcherOutput {
 
             const {latitud, longitud} = coordenadasCiudad[ciudad]
 
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitud}&longitude=${longitud}&hourly=temperature_2m,wind_speed_10m&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&timezone=America%2FChicago`
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitud}&longitude=${longitud}&hourly=temperature_2m,wind_speed_10m&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,precipitation&timezone=America%2FChicago`
 
             const fetchData = async () => {
 
@@ -65,7 +65,7 @@ export default function DataFetcher(ciudad: string) : DataFetcherOutput {
 
                     const result: OpenMeteoResponse = await response.json();
 
-                    console.log(`Datos obtenidos:`, result);
+                    //console.log(`Datos obtenidos:`, result);
 
                     setData(result);
 

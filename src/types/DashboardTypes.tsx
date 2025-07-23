@@ -31,6 +31,7 @@ export interface Current {
   relative_humidity_2m: number;
   apparent_temperature: number;
   wind_speed_10m: number;
+  precipitation: number;
 }
 
 export interface Currentunits {

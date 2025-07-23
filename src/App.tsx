@@ -1,20 +1,27 @@
 import './App.css';
 import { Grid } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import { useState } from 'react';
 
 import HeaderUI from './components/HeaderUI';
-import AlertUI from './components/AlertUI';
+import PrecipitationAlertUI from './components/PrecipitationAlertUI';
 import SelectorUI from './components/SelectorUI';
 import IndicatorUI from './components/IndicatorUI';
-import DataFetcher from './functions/DataFetcher';
 import TableUI from './components/TableUI';
 import ChartUI from './components/ChartUI';
+import CohereTipsUI from './components/CohereTipsUI';
+
+import DataFetcher from './functions/DataFetcher';
+import getCohereResponse from './functions/CohereAssistant';
 
 function App() {
 
   const [cityInput, setCityInput] = useState('guayaquil');
 
   const dataFetcherOutput = DataFetcher(cityInput);
+  const respuestaCohere = getCohereResponse(cityInput, dataFetcherOutput.data!);
+
 
   return (
     <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -27,7 +34,7 @@ function App() {
       {/* Alertas */}
       <Grid size={{ xs: 12, md: 12 }}>
         <Grid container justifyContent="right" alignItems="center">
-          <AlertUI description="No se preveen lluvias"/>
+          <PrecipitationAlertUI precipitation={dataFetcherOutput.data?.current.precipitation ?? 0}/>
         </Grid>
       </Grid>
 
@@ -100,7 +107,32 @@ function App() {
       </Grid>
 
       {/* Información adicional */}
-      <Grid size={{ xs: 12, md: 12 }}>Elemento: Información adicional</Grid>
+      <Grid container size={{ xs: 12, md: 12 }}>
+
+        <Grid size={{ xs: 12, md: 12 }}>
+
+          <Typography variant="h4" sx={{fontWeight: 'bold'}}>
+            Recomendaciones
+          </Typography>
+
+        </Grid>
+      
+        {respuestaCohere.loading && 
+          <Typography variant="h5">
+            Cargando recomendaciones...
+          </Typography>}
+
+        {(!respuestaCohere.loading && respuestaCohere.error) && 
+          <Alert variant="standard" severity="error"> 
+            {respuestaCohere.error} 
+          </Alert>}
+
+        {(!respuestaCohere.loading && respuestaCohere.respuesta) && (
+        <Grid container sx={{alignItems: "stretch"}}>
+          <CohereTipsUI contenido={respuestaCohere.respuesta}/>
+        </Grid>)}
+      
+      </Grid>
 
     </Grid>
   )
